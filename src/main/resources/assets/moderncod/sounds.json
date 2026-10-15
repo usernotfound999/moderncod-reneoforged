@@ -1,0 +1,74 @@
+{
+	"breathing": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "moderncod:breathing",
+        "stream": false
+      }
+    ]
+  },
+	"shield_using": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "moderncod:shield_using",
+        "stream": false
+      }
+    ]
+  },
+  "shield_broken": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "moderncod:shield_broken",
+        "stream": false
+      }
+    ]
+  },
+  "shield_hited": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "moderncod:shield_hit",
+        "stream": false
+      }
+    ]
+  },
+  "flesh_hit": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "moderncod:flesh_hit",
+        "stream": false
+      }
+    ]
+  },
+  "kill": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "moderncod:kill",
+        "stream": false
+      }
+    ]
+  },
+  "head_hit": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "moderncod:head_hit",
+        "stream": false
+      }
+    ]
+  },
+  "head_kill": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "moderncod:head_kill",
+        "stream": false
+      }
+    ]
+  }
+}

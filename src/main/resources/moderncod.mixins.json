@@ -1,0 +1,20 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.whitefood.moderncod.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "EntityMixin",
+    "PlayerMixin"
+  ],
+  "client": [
+    "GunHudOverlayMixin",
+    "KillAmountOverlayMixin",
+    "KeyboardHandlerMixin",
+    "PlayerModelMixin",
+    "RenderHeadShotAABBMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

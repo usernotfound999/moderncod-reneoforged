@@ -1,0 +1,21 @@
+{
+  "message.moderncod.jump_kill": "跳跃击杀",
+  "message.moderncod.survivor_kill": "幸存者",
+  "message.moderncod.head_kill": "爆头",
+  "message.moderncod.aeria_kill": "凌空击落",
+  "message.moderncod.three_kill": "3 杀",
+  "message.moderncod.multi_five_kill": "%s 杀",
+  "message.moderncod.kill_streak": "已击杀: %s 第%d杀",
+  "message.moderncod.axe_kill": "斧劈击杀",
+  "message.moderncod.sword_kill": "剑刃击杀",
+  "message.moderncod.bow_kill": "弓箭击杀",
+  "message.moderncod.lr_melee_kill": "近战击杀",
+  "hud.moderncod.shield.use_tip": "右键以使用",
+  "hud.moderncod.shield.cancel_tip": "右键取消使用",
+  "key.moderncod.slide": "滑铲",
+  "key.moderncod.wheel_menu": "轮盘菜单",
+  "key.categories.moderncod": "Modern Cod",
+  "item.moderncod.shield": "钢制防弹板",
+  "item.moderncod.small_shield": "陶瓷防弹板"
+
+}

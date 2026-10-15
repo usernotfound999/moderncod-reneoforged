@@ -1,0 +1,18 @@
+{
+  "parent": "minecraft:item/handheld",
+  "loader": "neoforge:separate_transforms",
+  "base": {
+    "parent": "moderncod:item/shield_in_hand"
+  },
+  "perspectives": {
+    "gui": {
+      "parent": "moderncod:item/shield_in_inventory"
+    },
+    "ground": {
+      "parent": "moderncod:item/shield_in_inventory"
+    },
+    "fixed": {
+      "parent": "moderncod:item/shield_in_inventory"
+    }
+  }
+}
