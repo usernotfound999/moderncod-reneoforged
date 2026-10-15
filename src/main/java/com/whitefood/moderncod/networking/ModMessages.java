@@ -6,9 +6,12 @@ import com.whitefood.moderncod.gameroom.net.C2SRequestRoomListPacket;
 import com.whitefood.moderncod.gameroom.net.S2CRoomDataPacket;
 import com.whitefood.moderncod.gameroom.net.S2CRoomListPacket;
 import com.whitefood.moderncod.networking.packet.C2SMoveItemPacket;
+import com.whitefood.moderncod.networking.packet.C2SRequestCallingCardPacket;
+import com.whitefood.moderncod.networking.packet.C2SUploadCallingCardPacket;
 import com.whitefood.moderncod.networking.packet.C2SPlayerImagePacket;
 import com.whitefood.moderncod.networking.packet.S2CArmorBrokenIndicatorPacket;
 import com.whitefood.moderncod.networking.packet.S2CArmorHitIndicatorPacket;
+import com.whitefood.moderncod.networking.packet.S2CCallingCardDataPacket;
 import com.whitefood.moderncod.networking.packet.S2CGenericKillMessagePacket;
 import com.whitefood.moderncod.networking.packet.S2CImageDataSyncPacket;
 import com.whitefood.moderncod.networking.packet.S2CKillMessagePacket;
@@ -46,6 +49,9 @@ public class ModMessages {
          .playToClient(S2CGenericKillMessagePacket.TYPE, S2CGenericKillMessagePacket.STREAM_CODEC, S2CGenericKillMessagePacket::handle)
          .playToClient(S2CImageDataSyncPacket.TYPE, S2CImageDataSyncPacket.STREAM_CODEC, S2CImageDataSyncPacket::handle)
          .playToServer(C2SPlayerImagePacket.TYPE, C2SPlayerImagePacket.STREAM_CODEC, C2SPlayerImagePacket::handle)
+         .playToServer(C2SUploadCallingCardPacket.TYPE, C2SUploadCallingCardPacket.STREAM_CODEC, C2SUploadCallingCardPacket::handle)
+         .playToServer(C2SRequestCallingCardPacket.TYPE, C2SRequestCallingCardPacket.STREAM_CODEC, C2SRequestCallingCardPacket::handle)
+         .playToClient(S2CCallingCardDataPacket.TYPE, S2CCallingCardDataPacket.STREAM_CODEC, S2CCallingCardDataPacket::handle)
          .playToServer(C2SMoveItemPacket.TYPE, C2SMoveItemPacket.STREAM_CODEC, C2SMoveItemPacket::handle)
          .playToClient(S2COpenImageUIScreenPacket.TYPE, S2COpenImageUIScreenPacket.STREAM_CODEC, S2COpenImageUIScreenPacket::handle)
          .playToClient(S2CPlayerImagePacket.TYPE, S2CPlayerImagePacket.STREAM_CODEC, S2CPlayerImagePacket::handle)

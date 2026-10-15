@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import com.whitefood.moderncod.client.data.WeaponHudRegistry;
 import com.whitefood.moderncod.command.rule.ModGameRules;
 import com.whitefood.moderncod.command.scoreboard.ModCriteriaTriggers;
+import com.whitefood.moderncod.config.ModernCodConfig;
 import com.whitefood.moderncod.event.custom.BreathRegenHandler;
 import com.whitefood.moderncod.event.custom.KillMessageServerHandler;
 import com.whitefood.moderncod.event.custom.KillXPServerHandler;
@@ -18,6 +19,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
@@ -30,6 +32,7 @@ public class ModernCodMod {
 
    public ModernCodMod(IEventBus modEventBus, ModContainer modContainer) {
       modEventBus.addListener(this::commonSetup);
+      modContainer.registerConfig(ModConfig.Type.COMMON, ModernCodConfig.SPEC);
       ModItems.register(modEventBus);
       ModGameRules.register();
       ModCriteriaTriggers.register(modEventBus);

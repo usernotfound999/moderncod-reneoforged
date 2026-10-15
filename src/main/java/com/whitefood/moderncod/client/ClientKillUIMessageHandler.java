@@ -176,44 +176,23 @@ public class ClientKillUIMessageHandler {
    }
 
    private static void renderPlayerImageForQueue(GuiGraphics guiGraphics, String playerName, int x, int y) {
-      Minecraft mc = Minecraft.getInstance();
-      if (mc.level != null) {
-         Player player = mc.level.players().stream().filter(p -> p.getGameProfile().getName().equals(playerName)).findFirst().orElse(null);
-         String imagePath;
-         if (player != null) {
-            imagePath = ClientImageDataManager.getPlayerImage(player.getUUID());
-         } else {
-            imagePath = PlayerImageManager.DEFAULT_IMAGE.getPath();
-         }
-
-         ResourceLocation texture = ResourceLocation.fromNamespaceAndPath("moderncod", imagePath);
-
-         try {
-            guiGraphics.blit(texture, x, y, 0.0F, 0.0F, 128, 32, 128, 32);
-         } catch (Exception e) {
-            guiGraphics.blit(PlayerImageManager.DEFAULT_IMAGE, x, y, 0.0F, 0.0F, 128, 32, 128, 32);
-         }
-      }
+      renderPlayerCard(guiGraphics, playerName, x, y);
    }
 
    private static void renderPlayerImageForKillStreak(GuiGraphics guiGraphics, String playerName, int x, int y) {
+      renderPlayerCard(guiGraphics, playerName, x, y);
+   }
+
+   private static void renderPlayerCard(GuiGraphics guiGraphics, String playerName, int x, int y) {
       Minecraft mc = Minecraft.getInstance();
-      if (mc.level != null) {
-         Player player = mc.level.players().stream().filter(p -> p.getGameProfile().getName().equals(playerName)).findFirst().orElse(null);
-         String imagePath;
-         if (player != null) {
-            imagePath = ClientImageDataManager.getPlayerImage(player.getUUID());
-         } else {
-            imagePath = PlayerImageManager.DEFAULT_IMAGE.getPath();
-         }
-
-         ResourceLocation texture = ResourceLocation.fromNamespaceAndPath("moderncod", imagePath);
-
-         try {
-            guiGraphics.blit(texture, x, y, 0.0F, 0.0F, 128, 32, 128, 32);
-         } catch (Exception e) {
-            guiGraphics.blit(PlayerImageManager.DEFAULT_IMAGE, x, y, 0.0F, 0.0F, 128, 32, 128, 32);
-         }
+      if (mc.level == null) {
+         return;
       }
+      Player player = mc.level.players().stream().filter(p -> p.getGameProfile().getName().equals(playerName)).findFirst().orElse(null);
+      // getTexture() always returns a registered texture (dynamic card or the default image), so we
+      // never blit the missing texture.
+      ResourceLocation texture = player != null ? ClientImageDataManager.getTexture(player.getUUID()) : PlayerImageManager.DEFAULT_IMAGE;
+      int[] size = player != null ? ClientImageDataManager.getTextureSize(player.getUUID()) : new int[]{128, 32};
+      guiGraphics.blit(texture, x, y, 128, 32, 0.0F, 0.0F, size[0], size[1], size[0], size[1]);
    }
 }

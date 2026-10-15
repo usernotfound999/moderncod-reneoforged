@@ -5,18 +5,15 @@ import com.tacz.guns.api.event.common.EntityHurtByGunEvent.Pre;
 import com.tacz.guns.api.item.IGun;
 import com.tacz.guns.item.ModernKineticGunItem;
 import com.whitefood.moderncod.command.OpenImageUICommands;
+import com.whitefood.moderncod.event.custom.CallingCardServerHandler;
 import com.whitefood.moderncod.event.custom.KillStreakTrackerHandler;
-import com.whitefood.moderncod.event.custom.PlayerImageManager;
 import com.whitefood.moderncod.gameroom.command.FpsCommand;
 import com.whitefood.moderncod.networking.ModMessages;
 import com.whitefood.moderncod.networking.packet.S2CArmorBrokenIndicatorPacket;
 import com.whitefood.moderncod.networking.packet.S2CArmorHitIndicatorPacket;
-import com.whitefood.moderncod.networking.packet.S2CImageDataSyncPacket;
-import com.whitefood.moderncod.networking.packet.S2CPlayerImagePacket;
 import com.whitefood.moderncod.networking.packet.S2CPlayerSoundsPacket;
 import com.whitefood.moderncod.sound.ModSounds;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
@@ -148,15 +145,7 @@ public class ModEvents {
          }
 
          if (!event.getLevel().isClientSide() && event.getEntity() instanceof ServerPlayer newPlayer) {
-            ModMessages.sendToPlayer(new S2CImageDataSyncPacket(newPlayer.getUUID(), PlayerImageManager.getPlayerImage(newPlayer)), newPlayer);
-            MinecraftServer server = newPlayer.getServer();
-            if (server != null) {
-               for (ServerPlayer onlinePlayer : server.getPlayerList().getPlayers()) {
-                  if (onlinePlayer != newPlayer) {
-                     ModMessages.sendToPlayer(new S2CPlayerImagePacket(onlinePlayer.getUUID(), PlayerImageManager.getPlayerImage(onlinePlayer)), newPlayer);
-                  }
-               }
-            }
+            CallingCardServerHandler.syncTo(newPlayer);
          }
       }
    }
