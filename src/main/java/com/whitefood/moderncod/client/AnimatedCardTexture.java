@@ -1,6 +1,7 @@
 package com.whitefood.moderncod.client;
 
 import com.mojang.blaze3d.platform.NativeImage;
+import com.mojang.blaze3d.platform.TextureUtil;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.server.packs.resources.ResourceManager;
 
@@ -20,6 +21,9 @@ public class AnimatedCardTexture extends AbstractTexture {
       this.durations = durations;
       this.index = 0;
       this.nextSwitch = System.currentTimeMillis() + durations[0];
+      // Allocate the GL texture storage first: without this the texture has no backing store and
+      // samples as nothing. DynamicTexture does exactly the same in its constructor.
+      TextureUtil.prepareImage(this.getId(), frames[0].getWidth(), frames[0].getHeight());
       this.uploadFrame(0);
    }
 
@@ -58,5 +62,6 @@ public class AnimatedCardTexture extends AbstractTexture {
       for (NativeImage frame : this.frames) {
          frame.close();
       }
+      this.releaseId();
    }
 }
