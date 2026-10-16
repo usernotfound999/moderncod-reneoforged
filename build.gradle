@@ -37,7 +37,9 @@ repositories {
 }
 
 base {
-    archivesName = mod_id
+    // Name of the produced archives (jar/sources/javadoc): moderncod-reneoforged-<version>.<ext>
+    // `version` is set from `mod_version` in gradle.properties.
+    archivesName = 'moderncod-reneoforged'
 }
 
 // Mojang ships Java 21 to end users in 1.21.1, so mods should target Java 21.
