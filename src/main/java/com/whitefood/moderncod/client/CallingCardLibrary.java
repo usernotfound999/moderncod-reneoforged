@@ -14,12 +14,13 @@ import java.util.stream.Stream;
 import net.neoforged.fml.loading.FMLPaths;
 
 /**
- * Client-side scanner for the config-driven calling card folder
- * ({@code config/moderncod/callingcards}).
+ * Client-side scanner for the config-driven calling card folder.
  *
- * <p>Only {@code .png} files within the configured size limit are accepted. Invalid files are kept
- * in the list with a non-null {@link Entry#error} so the selection screen can warn the player
- * instead of silently hiding them.</p>
+ * <p>The folder lives under the <b>game</b> directory (default
+ * {@code moderncod/custom_calling_cards}) rather than the config directory. PNG and WebP files
+ * (WebP may even be animated) within the configured size limit are accepted; anything invalid is
+ * kept in the list with a non-null {@link Entry#error} so the selection screen can warn instead of
+ * silently hiding it.</p>
  */
 public final class CallingCardLibrary {
    public static final class Entry {
@@ -64,7 +65,7 @@ public final class CallingCardLibrary {
    }
 
    public static Path directory() {
-      return FMLPaths.CONFIGDIR.get().resolve(ModernCodConfig.callingCardsDir());
+      return FMLPaths.GAMEDIR.get().resolve(ModernCodConfig.callingCardsDir());
    }
 
    public static synchronized List<Entry> entries() {
@@ -85,7 +86,10 @@ public final class CallingCardLibrary {
          }
          try (Stream<Path> stream = Files.list(directory)) {
             stream.filter(Files::isRegularFile)
-               .filter(path -> path.getFileName().toString().toLowerCase(Locale.ROOT).endsWith(".png"))
+               .filter(path -> {
+                  String name = path.getFileName().toString().toLowerCase(Locale.ROOT);
+                  return name.endsWith(".png") || name.endsWith(".webp");
+               })
                .forEach(path -> result.add(readEntry(path)));
          }
       } catch (IOException e) {

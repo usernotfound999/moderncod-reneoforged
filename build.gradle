@@ -119,6 +119,8 @@ neoForge {
 // "optional", meaning it will not be pulled by dependents of this mod.
 configurations {
     runtimeClasspath.extendsFrom localRuntime
+    // Pure-Java WebP decoder, bundled into the mod jar (see LICENSE_IMAGE_WEBP_DECODER).
+    webpDecoder
 }
 
 dependencies {
@@ -129,6 +131,19 @@ dependencies {
     // Provided as a local jar (see libs/); compile against it and load it in dev runs.
     compileOnly files("libs/tacz-neoforge-1.21.1-1.1.8-hotfix-r1.jar")
     localRuntime files("libs/tacz-neoforge-1.21.1-1.1.8-hotfix-r1.jar")
+
+    // Pure-Java WebP decoder (MIT) - used for custom calling cards. Unlike the JNI-based WebP
+    // libraries this one needs no native code, so it also works on the user's Android runtime.
+    // It is embedded straight into the mod jar by the `jar` task below.
+    implementation files("libs/image-webp-decoder-1.3.0.jar")
+    webpDecoder files("libs/image-webp-decoder-1.3.0.jar")
+}
+
+// Bundle the pure-Java WebP decoder inside the mod jar so clients need no extra mod.
+tasks.named('jar', Jar).configure {
+    from(configurations.webpDecoder.collect { it.isDirectory() ? it : zipTree(it) }) {
+        exclude 'META-INF/MANIFEST.MF', 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA'
+    }
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

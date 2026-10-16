@@ -15,6 +15,7 @@ public final class ModernCodConfig {
    private static final ModConfigSpec.ConfigValue<String> CALLING_CARDS_DIR;
    private static final ModConfigSpec.IntValue MAX_UPLOAD_KB;
    private static final ModConfigSpec.IntValue MAX_CACHE_MB;
+   private static final ModConfigSpec.IntValue MAX_WEBP_FRAMES;
 
    static {
       ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
@@ -23,14 +24,18 @@ public final class ModernCodConfig {
          .comment("Whether players may pick a custom calling card from the callingCardsDir folder.")
          .define("customCardsEnabled", true);
       CALLING_CARDS_DIR = builder
-         .comment("Folder, relative to the config directory, scanned for custom calling card images.")
-         .define("callingCardsDir", "moderncod/callingcards");
+         .comment("Folder, relative to the game directory (not the config directory), scanned for",
+            "custom calling card images. PNG and WebP (including animated WebP) are supported.")
+         .define("callingCardsDir", "moderncod/custom_calling_cards");
       MAX_UPLOAD_KB = builder
          .comment("Maximum size (in KB) of a custom calling card image. Larger files are rejected.")
          .defineInRange("maxUploadKb", 300, 1, 10240);
       MAX_CACHE_MB = builder
          .comment("Maximum size (in MB) the server-side calling card cache may use on disk.")
          .defineInRange("maxCacheMb", 256, 1, 10240);
+      MAX_WEBP_FRAMES = builder
+         .comment("Maximum number of frames kept from an animated WebP calling card.")
+         .defineInRange("maxWebpFrames", 120, 1, 512);
       builder.pop();
       SPEC = builder.build();
    }
@@ -56,5 +61,9 @@ public final class ModernCodConfig {
 
    public static long maxCacheBytes() {
       return (long) MAX_CACHE_MB.get() * 1024L * 1024L;
+   }
+
+   public static int maxWebpFrames() {
+      return MAX_WEBP_FRAMES.get();
    }
 }

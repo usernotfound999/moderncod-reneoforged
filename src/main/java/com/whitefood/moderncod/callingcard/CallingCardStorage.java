@@ -23,7 +23,7 @@ import net.neoforged.fml.loading.FMLPaths;
  */
 public final class CallingCardStorage {
    private static final String CACHE_DIR = "moderncod/calling_card_cache";
-   private static final String SUFFIX = ".png";
+   private static final String[] EXTENSIONS = {".png", ".webp"};
 
    private CallingCardStorage() {
    }
@@ -38,21 +38,36 @@ public final class CallingCardStorage {
       return dir;
    }
 
-   private static Path fileFor(String hash) {
-      return directory().resolve(hash + SUFFIX);
+   private static Path fileFor(String hash, String extension) {
+      return directory().resolve(hash + extension);
+   }
+
+   /** @return the existing cache file for {@code hash} (either extension), or {@code null}. */
+   private static Path existingFile(String hash) {
+      if (!CallingCard.isCustom(hash)) {
+         return null;
+      }
+      for (String extension : EXTENSIONS) {
+         Path file = fileFor(hash, extension);
+         if (Files.isRegularFile(file)) {
+            return file;
+         }
+      }
+      return null;
    }
 
    public static boolean exists(String hash) {
-      return CallingCard.isCustom(hash) && Files.isRegularFile(fileFor(hash));
+      return existingFile(hash) != null;
    }
 
    /** @return the cached bytes, or {@code null} when the hash is unknown. */
    public static byte[] load(String hash) {
-      if (!exists(hash)) {
+      Path file = existingFile(hash);
+      if (file == null) {
          return null;
       }
       try {
-         return Files.readAllBytes(fileFor(hash));
+         return Files.readAllBytes(file);
       } catch (IOException e) {
          ModernCodMod.LOGGER.warn("[moderncod] Failed to read calling card {}: {}", hash, e.toString());
          return null;
@@ -64,7 +79,11 @@ public final class CallingCardStorage {
       if (!CallingCard.isCustom(hash) || data == null || data.length == 0) {
          return false;
       }
-      Path file = fileFor(hash);
+      Path file = existingFile(hash);
+      if (file == null) {
+         String extension = ImageBytes.format(data) == ImageBytes.Format.WEBP ? ".webp" : ".png";
+         file = fileFor(hash, extension);
+      }
       try {
          if (Files.isRegularFile(file)) {
             // Refresh the timestamp so eviction treats it as recently used.
@@ -97,7 +116,8 @@ public final class CallingCardStorage {
             break;
          }
          String name = file.getFileName().toString();
-         String hash = name.endsWith(SUFFIX) ? name.substring(0, name.length() - SUFFIX.length()) : name;
+         int dot = name.lastIndexOf('.');
+         String hash = dot > 0 ? name.substring(0, dot) : name;
          if (protectedHashes != null && protectedHashes.contains(hash)) {
             continue;
          }

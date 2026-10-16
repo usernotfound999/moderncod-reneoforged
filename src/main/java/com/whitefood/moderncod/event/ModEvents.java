@@ -3,7 +3,6 @@ package com.whitefood.moderncod.event;
 import com.tacz.guns.api.event.common.EntityKillByGunEvent;
 import com.tacz.guns.api.event.common.EntityHurtByGunEvent.Pre;
 import com.tacz.guns.api.item.IGun;
-import com.tacz.guns.item.ModernKineticGunItem;
 import com.whitefood.moderncod.command.OpenImageUICommands;
 import com.whitefood.moderncod.event.custom.CallingCardServerHandler;
 import com.whitefood.moderncod.event.custom.KillStreakTrackerHandler;
@@ -19,9 +18,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
@@ -91,9 +87,8 @@ public class ModEvents {
    @SubscribeEvent
    public static void onPlayerKilled(LivingDeathEvent event) {
       if (event.getSource().getEntity() instanceof ServerPlayer serverPlayer) {
-         ItemStack mainHand = serverPlayer.getMainHandItem();
-         Item item = mainHand.getItem();
-         if (item instanceof ModernKineticGunItem) {
+         // TaCZ guns already play their own kill sound; moderncod must not play its own on top of it.
+         if (isHoldingTaczGun(serverPlayer)) {
             return;
          }
 
@@ -106,24 +101,32 @@ public class ModEvents {
 
    @SubscribeEvent
    public static void onPlayerKillByGun(EntityKillByGunEvent event) {
-      if (event.getAttacker() instanceof ServerPlayer attackerPlayer) {
-         Level world = attackerPlayer.level();
-         if (attackerPlayer.getMainHandItem().getItem() instanceof IGun gunItem) {
-            if (event.isHeadShot()) {
-               ModMessages.sendToPlayer(
-                  new S2CPlayerSoundsPacket(
-                     attackerPlayer.getX(), attackerPlayer.getY(), attackerPlayer.getZ(), (SoundEvent)ModSounds.HEAD_KILL.get()
-                  ),
-                  attackerPlayer
-               );
-            } else {
-               ModMessages.sendToPlayer(
-                  new S2CPlayerSoundsPacket(attackerPlayer.getX(), attackerPlayer.getY(), attackerPlayer.getZ(), (SoundEvent)ModSounds.KILL.get()),
-                  attackerPlayer
-               );
-            }
-         }
+      if (!(event.getAttacker() instanceof ServerPlayer attackerPlayer)) {
+         return;
       }
+      // Same rule as onPlayerKilled: while a TaCZ gun is in hand, TaCZ owns the kill sound, so
+      // moderncod stays silent to avoid the two overlapping.
+      if (isHoldingTaczGun(attackerPlayer)) {
+         return;
+      }
+      if (event.isHeadShot()) {
+         ModMessages.sendToPlayer(
+            new S2CPlayerSoundsPacket(
+               attackerPlayer.getX(), attackerPlayer.getY(), attackerPlayer.getZ(), (SoundEvent)ModSounds.HEAD_KILL.get()
+            ),
+            attackerPlayer
+         );
+      } else {
+         ModMessages.sendToPlayer(
+            new S2CPlayerSoundsPacket(attackerPlayer.getX(), attackerPlayer.getY(), attackerPlayer.getZ(), (SoundEvent)ModSounds.KILL.get()),
+            attackerPlayer
+         );
+      }
+   }
+
+   /** @return whether the entity is holding a TaCZ gun in its main hand. */
+   private static boolean isHoldingTaczGun(LivingEntity entity) {
+      return entity != null && IGun.getIGunOrNull(entity.getMainHandItem()) != null;
    }
 
    @SubscribeEvent
